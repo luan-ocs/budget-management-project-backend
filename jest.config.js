@@ -21,8 +21,16 @@ export default {
       useESM: true,
     },
   },
-  collectCoverageFrom: ['<rootDir>/src/*.ts'],
+  collectCoverageFrom: ['<rootDir>/src/**/*.ts'],
   coveragePathIgnorePatterns: ['<rootDir>/dist/', '/node_modules/', '<rootDir>/scripts', '<rootDir>/tools'],
   coverageProvider: 'v8',
   coverageReporters: isCI ? ['json'] : ['text'],
+  modulePaths: ['<rootDir>'],
+  coverageThreshold: {
+    global: {
+      branches: 60,
+      functions: 60,
+      lines: 80,
+    },
+  },
 }
