@@ -1,6 +1,6 @@
 import { User } from '@prisma/client'
 import { UserEntity } from 'src/entities/User'
-import { PasswordsNotMatchException } from 'src/entities/Errors/User'
+import { PasswordsNotMatchException } from 'src/entities/errors/User'
 
 describe('Entity: User', () => {
   const data = {

@@ -1,6 +1,6 @@
 import { User } from '@prisma/client'
 import { decryptPassword, encryptPassword } from 'src/utils/encryptPassword'
-import { PasswordsNotMatchException } from 'src/entities/Errors/User'
+import { PasswordsNotMatchException } from 'src/entities/errors/User'
 
 export interface SetDataProps {
   name?: string
@@ -13,14 +13,21 @@ export interface SetDataProps {
 export class UserEntity {
   private data: User
 
-  public constructor(data: User) {
-    const password = encryptPassword(data.password)
+  public constructor(data: User, encryptPassword: boolean = true) {
     this.data = { ...data }
-    this.data.password = password
+
+    if (encryptPassword) {
+      this.encryptPassword()
+    }
   }
 
   public getData(): User {
     return this.data
+  }
+
+  public encryptPassword() {
+    const password = encryptPassword(this.data.password)
+    this.data.password = password
   }
 
   public setData(data: SetDataProps) {
