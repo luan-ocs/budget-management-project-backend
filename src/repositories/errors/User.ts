@@ -11,3 +11,10 @@ export class NotFoundByEmailException extends Error {
     this.message = `User with email: ${email} was not found`
   }
 }
+
+export class AlreadyCreatedException extends Error {
+  constructor() {
+    super()
+    this.message = `user with this email already is created`
+  }
+}
