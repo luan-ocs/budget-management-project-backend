@@ -11,4 +11,7 @@ jest.mock('src/utils/prismaSettings', () => ({
   default: deepMock,
 }))
 
+afterAll(() => {
+  jest.deepUnmock('src/utils/prismaSettings')
+})
 export const prismaMock = prisma as unknown as DeepMockProxy<PrismaClient>
