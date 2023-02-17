@@ -2,7 +2,8 @@ import { InMemoryUserRepository } from 'src/repositories/implementations/InMemor
 import { UserService } from 'src/services/UserService'
 import { createRandomUser } from 'src/utils/randomUser'
 import crypto from 'node:crypto'
-import { NotFoundByidException } from 'src/repositories/errors/User'
+import { ObjectNotFoundException } from 'src/services/errors/ObjectNotFoundException'
+// import { test } from 'jest'
 
 describe('Service: User Service', () => {
   it('should be able to create a user', async () => {
@@ -51,7 +52,7 @@ describe('Service: User Service', () => {
 
     await service.deleteUser(createdData.id)
 
-    const error = new NotFoundByidException(createdData.id, 'User')
+    const error = new ObjectNotFoundException('user', createdData.id)
 
     expect(service.findUserById(createdData.id)).rejects.toThrowError(error)
   })
@@ -70,4 +71,37 @@ describe('Service: User Service', () => {
 
     expect(testData).toStrictEqual(createdData)
   })
+
+  it('should be able to get a user by email', async () => {
+    const service = new UserService(new InMemoryUserRepository())
+
+    const mockUser = createRandomUser(crypto.randomUUID())
+
+    const created = await service.createUser(mockUser)
+    const createdData = created.getData()
+
+    const gettedUser = await service.findUserByEmail(createdData.email)
+
+    const testData = gettedUser.getData()
+
+    expect(testData).toStrictEqual(createdData)
+  })
+
+  it('should be able to return all users in database', async () => {
+    const service = new UserService(new InMemoryUserRepository())
+
+    const mockUser = createRandomUser(crypto.randomUUID())
+
+    const created = await service.createUser(mockUser)
+    const createdData = created.getData()
+
+    const allUsers = await service.findAll()
+    expect(createdData.email).toBe(allUsers[0].email)
+  })
+
+  it.todo('should be able to modify a password of a created user')
+
+  it.todo("shouldn't get a user that id not exist")
+
+  it.todo("shouldn't be able to modify a password if last password is incorrect")
 })

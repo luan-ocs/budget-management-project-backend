@@ -1,7 +1,7 @@
 import { PrismaClient, User } from '@prisma/client'
-import { UserEntity, SetDataProps } from 'src/entities/User'
-import { IUserRepository } from 'src/repositories/UserRepository'
-import { NotFoundByEmailException, NotFoundByidException } from 'src/repositories/errors/User'
+import { UserEntity, SetDataProps } from '../../entities/User.js'
+import { IUserRepository } from '../../repositories/UserRepository.js'
+import { NotFoundByEmailException, NotFoundByidException } from '../../repositories/errors/User.js'
 
 export class UserRepository implements IUserRepository {
   private client: PrismaClient
@@ -70,5 +70,11 @@ export class UserRepository implements IUserRepository {
         id,
       },
     })
+  }
+
+  async findAll(): Promise<UserEntity[]> {
+    const allUsers = await this.repository.findMany()
+
+    return allUsers.map(user => new UserEntity(user))
   }
 }

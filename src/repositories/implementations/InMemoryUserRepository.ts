@@ -46,4 +46,8 @@ export class InMemoryUserRepository implements IUserRepository {
 
     this.repository = this.repository.filter(u => u.getData().id !== user.getData().id)
   }
+
+  async findAll(): Promise<UserEntity[]> {
+    return this.repository
+  }
 }

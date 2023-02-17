@@ -8,6 +8,10 @@ beforeEach(async () => {
   await prismaMock.user.deleteMany()
 })
 
+afterAll(async () => {
+  await prismaMock.$disconnect()
+})
+
 describe('Repository: User repository', () => {
   const data = {
     id: '123',
