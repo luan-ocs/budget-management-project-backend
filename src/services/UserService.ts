@@ -3,6 +3,18 @@ import { SetDataProps, UserEntity } from 'src/entities/User'
 import { IUserRepository } from '../repositories/UserRepository.js'
 import { ObjectNotFoundException } from './errors/ObjectNotFoundException.js'
 
+/**
+ *
+ *
+  interface createUserProps {
+
+  name: string,
+  email: string,
+  password: string;
+}
+ *
+ */
+
 export class UserService {
   private repository: IUserRepository
 

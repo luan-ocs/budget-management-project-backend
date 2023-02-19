@@ -5,9 +5,9 @@ import { PasswordsNotMatchException } from '../entities/errors/User.js'
 export interface SetDataProps {
   name?: string
   email?: string
-  birthday?: Date
-  work?: string
-  gender?: string
+  birthday?: Date | null
+  work?: string | null
+  gender?: string | null
 }
 
 export class UserEntity {
