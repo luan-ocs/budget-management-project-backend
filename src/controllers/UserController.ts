@@ -47,6 +47,8 @@ export class UserController {
 
       const created = await this.userService.createUser(body)
 
+      res.header('Location', `/users/${created.getData().id}`)
+
       res.status(201).send(created.getPublicData())
     } catch (err) {
       const data = GetErrorType(req, err)

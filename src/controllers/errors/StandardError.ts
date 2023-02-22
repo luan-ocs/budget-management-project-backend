@@ -1,5 +1,6 @@
 import { FastifyRequest } from 'fastify'
 import { ObjectNotFoundException } from 'src/services/errors/ObjectNotFoundException.js'
+import { ZodError } from 'zod'
 import { InvalidParamException } from './InvalidParamException.js'
 
 export class StandardError {
@@ -28,6 +29,12 @@ export class StandardError {
 
   static ObjectNotFoundException(req: FastifyRequest, error: ObjectNotFoundException) {
     const data = new StandardError(error.message, new Date(), req.routerPath, 404)
+
+    return data
+  }
+
+  static MissingParamException(req: FastifyRequest, error: ZodError) {
+    const data = new StandardError(error.message, new Date(), req.routerPath, 400)
 
     return data
   }

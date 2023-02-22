@@ -9,5 +9,7 @@ export function UserRoutes(app: FastifyInstance, opts: FastifyPluginOptions, don
   const controller = new UserController(service)
 
   app.get('/users', (req, res) => controller.findAll(req, res))
+  app.get('/users/:id', (req, res) => controller.findById(req, res))
+  app.post('/users', (req, res) => controller.createUser(req, res))
   done()
 }

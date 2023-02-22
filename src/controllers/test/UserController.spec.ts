@@ -73,4 +73,20 @@ describe('Controller: User Controller', () => {
     expect(userReturned.gender).toBe(randomUser.gender)
     expect(userReturned.work).toBe(randomUser.work)
   })
+
+  it("shouldn't be able to create user with missing data", async () => {
+    const repository = new InMemoryUserRepository()
+    const service = new UserService(repository)
+    const controller = new UserController(service)
+
+    const server = Fastify()
+
+    server.post('/users', (req, res) => controller.createUser(req, res))
+
+    const response = await server.inject().post('/users').body({
+      name: 'test',
+    })
+
+    expect(response.statusCode).toBe(400)
+  })
 })

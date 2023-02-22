@@ -1,9 +1,14 @@
 import { FastifyRequest } from 'fastify'
+import { ZodError } from 'zod'
 import { StandardError } from './StandardError.js'
 
 export function GetErrorType(req: FastifyRequest, error: unknown) {
   if (!(error instanceof Error)) {
     return StandardError.UnknownException(req)
+  }
+
+  if (error instanceof ZodError) {
+    return StandardError.MissingParamException(req, error)
   }
 
   switch (error?.name) {
