@@ -47,4 +47,30 @@ describe('Controller: User Controller', () => {
     expect(body.status).toBe(404)
     expect(body.message).toBe('Object user was not found: abc')
   })
+
+  it('should be able to create a user', async () => {
+    const repository = new InMemoryUserRepository()
+    const service = new UserService(repository)
+    const controller = new UserController(service)
+    const randomUser = createRandomUser()
+
+    const server = Fastify()
+
+    server.post('/users', (req, res) => controller.createUser(req, res))
+
+    const response = await server
+      .inject()
+      .post('/users')
+      .body({
+        ...randomUser,
+      })
+
+    const userReturned = JSON.parse(response.body)
+
+    expect(userReturned.name).toBe(randomUser.name)
+    expect(userReturned.email).toBe(randomUser.email)
+    expect(userReturned.password).not.toBe(randomUser.password)
+    expect(userReturned.gender).toBe(randomUser.gender)
+    expect(userReturned.work).toBe(randomUser.work)
+  })
 })

@@ -1,19 +1,15 @@
-import { User } from '@prisma/client'
 import { SetDataProps, UserEntity } from '../entities/User.js'
 import { IUserRepository } from '../repositories/UserRepository.js'
 import { ObjectNotFoundException } from './errors/ObjectNotFoundException.js'
 
-/**
- *
- *
-  interface createUserProps {
-
-  name: string,
-  email: string,
-  password: string;
+interface createUserProps {
+  name: string
+  email: string
+  password: string
+  birthday: Date | null
+  work: string | null
+  gender: string | null
 }
- *
- */
 
 export class UserService {
   private repository: IUserRepository
@@ -22,8 +18,14 @@ export class UserService {
     this.repository = repository
   }
 
-  async createUser(user: Omit<User, 'id'>): Promise<UserEntity> {
-    const userEntity = new UserEntity(user)
+  async createUser(user: createUserProps): Promise<UserEntity> {
+    const userData = {
+      ...user,
+      createdAt: new Date(),
+      isAdmin: false,
+    }
+
+    const userEntity = new UserEntity(userData)
     const created = await this.repository.createUser(userEntity)
     return created
   }

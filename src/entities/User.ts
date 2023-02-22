@@ -10,7 +10,6 @@ export interface SetDataProps {
   work?: string | null
   gender?: string | null
 }
-
 export class UserEntity {
   private data: User
 
