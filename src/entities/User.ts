@@ -1,6 +1,7 @@
 import { User } from '@prisma/client'
 import { decryptPassword, encryptPassword } from '../utils/encryptPassword.js'
 import { PasswordsNotMatchException } from '../entities/errors/User.js'
+import crypto from 'node:crypto'
 
 export interface SetDataProps {
   name?: string
@@ -13,10 +14,11 @@ export interface SetDataProps {
 export class UserEntity {
   private data: User
 
-  public constructor(data: User, encryptPassword: boolean = true) {
-    this.data = { ...data }
+  public constructor(data: Omit<User, 'id'>, id?: string) {
+    const userData = { ...data, id: id || crypto.randomUUID() }
+    this.data = userData
 
-    if (encryptPassword) {
+    if (!id) {
       this.encryptPassword()
     }
   }

@@ -1,5 +1,5 @@
 import { User } from '@prisma/client'
-import { SetDataProps, UserEntity } from 'src/entities/User'
+import { SetDataProps, UserEntity } from '../entities/User.js'
 import { IUserRepository } from '../repositories/UserRepository.js'
 import { ObjectNotFoundException } from './errors/ObjectNotFoundException.js'
 
@@ -10,13 +10,17 @@ export class UserService {
     this.repository = repository
   }
 
-  async createUser(user: User): Promise<UserEntity> {
-    const created = await this.repository.createUser(user)
+  async createUser(user: Omit<User, 'id'>): Promise<UserEntity> {
+    const userEntity = new UserEntity(user)
+    const created = await this.repository.createUser(userEntity)
     return created
   }
 
   async updateUser(user: SetDataProps, id: string): Promise<UserEntity> {
-    const updated = await this.repository.updateUser(user, id)
+    const finded = await this.findUserById(id)
+    finded.setData(user)
+
+    const updated = await this.repository.updateUser(finded, id)
 
     return updated
   }

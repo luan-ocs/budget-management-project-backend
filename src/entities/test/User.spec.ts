@@ -4,7 +4,6 @@ import { PasswordsNotMatchException } from 'src/entities/errors/User'
 
 describe('Entity: User', () => {
   const data = {
-    id: '123',
     name: 'John Doe',
     email: 'john.doe@gmail.com',
     password: 'password123',
@@ -16,7 +15,6 @@ describe('Entity: User', () => {
 
     const returnedData = user.getData()
     expect(user).toBeTruthy()
-    expect(returnedData.id).toBe(data.id)
     expect(returnedData.name).toBe(data.name)
     expect(returnedData.email).toBe(data.email)
   })
@@ -65,5 +63,11 @@ describe('Entity: User', () => {
     expect(newData.email).toBe(updatedData.email)
     expect(newData.work).toBe(updatedData.work)
     expect(newData.birthday).toBe(updatedData.birthday)
+  })
+
+  it('should be able to create a user with existing id', () => {
+    const user = new UserEntity(data, '123abc')
+
+    expect(user.getData().id).toBe('123abc')
   })
 })

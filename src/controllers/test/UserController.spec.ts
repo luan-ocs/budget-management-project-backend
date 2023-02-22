@@ -9,7 +9,7 @@ describe('Controller: User Controller', () => {
     const repository = new InMemoryUserRepository()
     const service = new UserService(repository)
     const controller = new UserController(service)
-    const randomUser = createRandomUser('123456')
+    const randomUser = createRandomUser()
     await service.createUser(randomUser)
 
     const server = Fastify()
@@ -30,7 +30,7 @@ describe('Controller: User Controller', () => {
     const repository = new InMemoryUserRepository()
     const service = new UserService(repository)
     const controller = new UserController(service)
-    const randomUser = createRandomUser('123456')
+    const randomUser = createRandomUser()
     await service.createUser(randomUser)
 
     const server = Fastify()

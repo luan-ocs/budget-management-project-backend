@@ -1,5 +1,5 @@
-import { PrismaClient, User } from '@prisma/client'
-import { UserEntity, SetDataProps } from '../../entities/User.js'
+import { PrismaClient } from '@prisma/client'
+import { UserEntity } from '../../entities/User.js'
 import { IUserRepository } from '../../repositories/UserRepository.js'
 import { NotFoundByEmailException, NotFoundByidException } from '../../repositories/errors/User.js'
 
@@ -23,7 +23,7 @@ export class UserRepository implements IUserRepository {
       throw new NotFoundByEmailException(email)
     }
 
-    return new UserEntity(user, false)
+    return new UserEntity(user, user.id)
   }
 
   async findById(id: string): Promise<UserEntity> {
@@ -37,14 +37,11 @@ export class UserRepository implements IUserRepository {
       throw new NotFoundByidException(id, 'User')
     }
 
-    return new UserEntity(user, false)
+    return new UserEntity(user, user.id)
   }
-  async updateUser(user: SetDataProps, id: string): Promise<UserEntity> {
-    const userEnt = await this.findById(id)
-
-    userEnt.setData(user)
-
-    const updatedData = userEnt.getData()
+  async updateUser(user: UserEntity, id: string): Promise<UserEntity> {
+    await this.findById(id)
+    const updatedData = user.getData()
 
     await this.repository.update({
       where: {
@@ -53,16 +50,16 @@ export class UserRepository implements IUserRepository {
       data: updatedData,
     })
 
-    return userEnt
+    return user
   }
-  async createUser(user: User): Promise<UserEntity> {
-    const userEnt = new UserEntity(user)
-
-    await this.repository.create({
-      data: userEnt.getData(),
+  async createUser(user: UserEntity): Promise<UserEntity> {
+    const created = await this.repository.create({
+      data: user.getData(),
     })
 
-    return userEnt
+    const returnUser = new UserEntity(created, created.id)
+
+    return returnUser
   }
   async deleteUser(id: string): Promise<void> {
     await this.repository.delete({
@@ -75,6 +72,6 @@ export class UserRepository implements IUserRepository {
   async findAll(): Promise<UserEntity[]> {
     const allUsers = await this.repository.findMany()
 
-    return allUsers.map(user => new UserEntity(user))
+    return allUsers.map(user => new UserEntity(user, user.id))
   }
 }

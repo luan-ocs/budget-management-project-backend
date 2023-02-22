@@ -25,8 +25,8 @@ export class UserController {
 
     try {
       const user = await this.userService.findUserById(params.id)
-
-      res.send(user)
+      const userDTO = user.getPublicData()
+      res.send(userDTO)
     } catch (error) {
       const data = GetErrorType(req, error)
       res.status(data.status).send(data)

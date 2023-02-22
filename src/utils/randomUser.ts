@@ -1,8 +1,7 @@
 import { faker } from '@faker-js/faker'
 
-export const createRandomUser = (id: string) => {
+export const createRandomUser = () => {
   return {
-    id,
     name: faker.name.fullName(),
     email: faker.internet.exampleEmail(),
     isAdmin: faker.datatype.boolean(),
