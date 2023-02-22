@@ -6,9 +6,9 @@ import crypto from 'node:crypto'
 export interface SetDataProps {
   name?: string
   email?: string
-  birthday?: Date
-  work?: string
-  gender?: string
+  birthday?: Date | null
+  work?: string | null
+  gender?: string | null
 }
 
 export class UserEntity {
