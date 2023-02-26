@@ -2,8 +2,6 @@ import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 import { UserService } from '../services/UserService.js'
 import { GetErrorType } from './errors/getErrorType.js'
-import crypto from 'node:crypto'
-import { createRandomUser } from '../utils/randomUser.js'
 
 export class UserController {
   private userService
@@ -26,8 +24,8 @@ export class UserController {
 
     try {
       const user = await this.userService.findUserById(params.id)
-
-      res.send(user)
+      const userDTO = user.getPublicData()
+      res.send(userDTO)
     } catch (error) {
       const data = GetErrorType(req, error)
       res.status(data.status).send(data)
@@ -36,10 +34,22 @@ export class UserController {
 
   async createUser(req: FastifyRequest, res: FastifyReply) {
     try {
-      const user = createRandomUser(crypto.randomUUID())
-      const created = await this.userService.createUser(user)
+      const reqBody = z.object({
+        name: z.string(),
+        email: z.string().email(),
+        password: z.string(),
+        birthday: z.coerce.date().nullable(),
+        work: z.string().nullable(),
+        gender: z.string().nullable(),
+      })
 
-      res.status(201).send(created.getData())
+      const body = reqBody.parse(req.body)
+
+      const created = await this.userService.createUser(body)
+
+      res.header('Location', `/users/${created.getData().id}`)
+
+      res.status(201).send(created.getPublicData())
     } catch (err) {
       const data = GetErrorType(req, err)
       res.status(data.status).send(data)
@@ -65,7 +75,7 @@ export class UserController {
 
       const user = await this.userService.updateUser(body, params.id)
 
-      res.status(204).send(user)
+      res.status(204).send(user.getPublicData())
     } catch (err) {
       const data = GetErrorType(req, err)
       res.status(data.status).send(data)

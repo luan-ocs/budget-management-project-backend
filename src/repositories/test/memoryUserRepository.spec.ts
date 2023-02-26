@@ -2,10 +2,10 @@ import { User } from '@prisma/client'
 import { InMemoryUserRepository } from 'src/repositories/implementations/InMemoryUserRepository'
 import { decryptPassword } from 'src/utils/encryptPassword'
 import { NotFoundByidException } from 'src/repositories/errors/User'
+import { UserEntity } from 'src/entities/User'
 
 describe('Repository: In Memory User repository', () => {
   const data = {
-    id: '123',
     name: 'John Doe',
     email: 'asd.asdasd@gmail.com',
     password: 'password123',
@@ -13,10 +13,12 @@ describe('Repository: In Memory User repository', () => {
     isAdmin: false,
   } as User
 
+  const dataEntity = new UserEntity(data)
+
   it('should be able to create user', async () => {
     const repository = new InMemoryUserRepository()
 
-    const userEntity = await repository.createUser(data)
+    const userEntity = await repository.createUser(dataEntity)
     const generatedData = userEntity.getData()
 
     expect(generatedData.name).toBe(data.name)
@@ -27,7 +29,7 @@ describe('Repository: In Memory User repository', () => {
   it('should be able to create and get user from database', async () => {
     const repository = new InMemoryUserRepository()
 
-    const userEntity = await repository.createUser(data)
+    const userEntity = await repository.createUser(dataEntity)
     const firstData = userEntity.getData()
 
     const userFromGet = await repository.findById(firstData.id)
@@ -43,7 +45,7 @@ describe('Repository: In Memory User repository', () => {
   it('should be able to update a user', async () => {
     const repository = new InMemoryUserRepository()
 
-    const userEntity = await repository.createUser(data)
+    const userEntity = await repository.createUser(dataEntity)
     const firstData = userEntity.getData()
 
     const updateData = {
@@ -51,7 +53,10 @@ describe('Repository: In Memory User repository', () => {
       email: 'abc@abc.com',
     }
 
-    const updatedUser = await repository.updateUser(updateData, firstData.id)
+    const updateEntity = new UserEntity(firstData, firstData.id)
+    updateEntity.setData(updateData)
+
+    const updatedUser = await repository.updateUser(updateEntity, firstData.id)
 
     const updatedData = updatedUser.getData()
 
@@ -62,7 +67,7 @@ describe('Repository: In Memory User repository', () => {
   it('should be able to delete a user exists in database', async () => {
     const repository = new InMemoryUserRepository()
 
-    const userEntity = await repository.createUser(data)
+    const userEntity = await repository.createUser(dataEntity)
     const firstData = userEntity.getData()
 
     await repository.deleteUser(firstData.id)

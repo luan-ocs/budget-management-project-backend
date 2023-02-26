@@ -1,5 +1,4 @@
-import { User } from '@prisma/client'
-import { SetDataProps, UserEntity } from 'src/entities/User'
+import { UserEntity } from 'src/entities/User'
 import { AlreadyCreatedException, NotFoundByEmailException, NotFoundByidException } from 'src/repositories/errors/User'
 import { IUserRepository } from 'src/repositories/UserRepository'
 
@@ -24,22 +23,25 @@ export class InMemoryUserRepository implements IUserRepository {
     return user
   }
 
-  async updateUser(user: SetDataProps, id: string): Promise<UserEntity> {
-    const fromDb = await this.findById(id)
+  async updateUser(user: UserEntity, id: string): Promise<UserEntity> {
+    await this.findById(id)
 
-    fromDb.setData(user)
+    this.repository = this.repository.filter(user => user.getData().id !== id)
 
-    return fromDb
+    this.repository.push(user)
+
+    return user
   }
 
-  async createUser(user: User): Promise<UserEntity> {
+  async createUser(userEntity: UserEntity): Promise<UserEntity> {
+    const user = userEntity.getData()
+
     if (this.repository.find(u => u.getData().email === user.email)) {
       throw new AlreadyCreatedException()
     }
-    const created = new UserEntity(user)
-    await this.repository.push(created)
+    await this.repository.push(userEntity)
 
-    return created
+    return userEntity
   }
   async deleteUser(id: string): Promise<void> {
     const user = await this.findById(id)

@@ -3,6 +3,7 @@ import { UserRepository } from 'src/repositories/implementations/PrismaUserRepos
 import { decryptPassword } from 'src/utils/encryptPassword'
 import { prismaMock } from 'src/repositories/test/singleton'
 import { NotFoundByidException } from 'src/repositories/errors/User'
+import { UserEntity } from 'src/entities/User'
 
 beforeEach(async () => {
   await prismaMock.user.deleteMany()
@@ -22,10 +23,12 @@ describe('Repository: User repository', () => {
     isAdmin: false,
   } as User
 
+  const dataEntity = new UserEntity(data)
+
   it('should be able to create user', async () => {
     const userRepository = new UserRepository(prismaMock)
 
-    const userEntity = await userRepository.createUser(data)
+    const userEntity = await userRepository.createUser(dataEntity)
     const generatedData = userEntity.getData()
 
     expect(generatedData.name).toBe(data.name)
@@ -36,7 +39,7 @@ describe('Repository: User repository', () => {
   it('should be able to create and get user from database', async () => {
     const userRepository = new UserRepository(prismaMock)
 
-    const userEntity = await userRepository.createUser(data)
+    const userEntity = await userRepository.createUser(dataEntity)
     const firstData = userEntity.getData()
 
     const userFromGet = await userRepository.findById(firstData.id)
@@ -52,7 +55,7 @@ describe('Repository: User repository', () => {
   it('should be able to update a user', async () => {
     const userRepository = new UserRepository(prismaMock)
 
-    const userEntity = await userRepository.createUser(data)
+    const userEntity = await userRepository.createUser(dataEntity)
     const firstData = userEntity.getData()
 
     const updateData = {
@@ -60,7 +63,10 @@ describe('Repository: User repository', () => {
       email: 'abc@abc.com',
     }
 
-    const updatedUser = await userRepository.updateUser(updateData, firstData.id)
+    const updateEntity = new UserEntity(firstData, firstData.id)
+    updateEntity.setData(updateData)
+
+    const updatedUser = await userRepository.updateUser(updateEntity, firstData.id)
 
     const updatedData = updatedUser.getData()
 
@@ -71,7 +77,7 @@ describe('Repository: User repository', () => {
   it('should be able to delete a user exists in database', async () => {
     const userRepository = new UserRepository(prismaMock)
 
-    const userEntity = await userRepository.createUser(data)
+    const userEntity = await userRepository.createUser(dataEntity)
     const firstData = userEntity.getData()
 
     await userRepository.deleteUser(firstData.id)

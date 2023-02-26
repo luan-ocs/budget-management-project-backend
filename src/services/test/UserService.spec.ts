@@ -1,7 +1,6 @@
 import { InMemoryUserRepository } from 'src/repositories/implementations/InMemoryUserRepository'
 import { UserService } from 'src/services/UserService'
 import { createRandomUser } from 'src/utils/randomUser'
-import crypto from 'node:crypto'
 import { ObjectNotFoundException } from 'src/services/errors/ObjectNotFoundException'
 // import { test } from 'jest'
 
@@ -9,7 +8,7 @@ describe('Service: User Service', () => {
   it('should be able to create a user', async () => {
     const service = new UserService(new InMemoryUserRepository())
 
-    const mockUser = createRandomUser(crypto.randomUUID())
+    const mockUser = createRandomUser()
 
     const created = await service.createUser(mockUser)
     const createdData = created.getData()
@@ -22,7 +21,7 @@ describe('Service: User Service', () => {
   it('should be able to update a user', async () => {
     const service = new UserService(new InMemoryUserRepository())
 
-    const mockUser = createRandomUser(crypto.randomUUID())
+    const mockUser = createRandomUser()
 
     const created = await service.createUser(mockUser)
     const createdData = created.getData()
@@ -45,7 +44,7 @@ describe('Service: User Service', () => {
   it('should be able to delete a user', async () => {
     const service = new UserService(new InMemoryUserRepository())
 
-    const mockUser = createRandomUser(crypto.randomUUID())
+    const mockUser = createRandomUser()
 
     const created = await service.createUser(mockUser)
     const createdData = created.getData()
@@ -60,7 +59,7 @@ describe('Service: User Service', () => {
   it('should be able to get an user by id', async () => {
     const service = new UserService(new InMemoryUserRepository())
 
-    const mockUser = createRandomUser(crypto.randomUUID())
+    const mockUser = createRandomUser()
 
     const created = await service.createUser(mockUser)
     const createdData = created.getData()
@@ -75,7 +74,7 @@ describe('Service: User Service', () => {
   it('should be able to get a user by email', async () => {
     const service = new UserService(new InMemoryUserRepository())
 
-    const mockUser = createRandomUser(crypto.randomUUID())
+    const mockUser = createRandomUser()
 
     const created = await service.createUser(mockUser)
     const createdData = created.getData()
@@ -90,7 +89,7 @@ describe('Service: User Service', () => {
   it('should be able to return all users in database', async () => {
     const service = new UserService(new InMemoryUserRepository())
 
-    const mockUser = createRandomUser(crypto.randomUUID())
+    const mockUser = createRandomUser()
 
     const created = await service.createUser(mockUser)
     const createdData = created.getData()
@@ -101,7 +100,15 @@ describe('Service: User Service', () => {
 
   it.todo('should be able to modify a password of a created user')
 
-  it.todo("shouldn't get a user that id not exist")
+  it("shouldn't get a user that id not exist", async () => {
+    const service = new UserService(new InMemoryUserRepository())
+
+    const mockUser = createRandomUser()
+
+    await service.createUser(mockUser)
+
+    expect(service.findUserById('123abc')).rejects.toThrowError(new ObjectNotFoundException('user', '123abc'))
+  })
 
   it.todo("shouldn't be able to modify a password if last password is incorrect")
 })
