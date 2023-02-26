@@ -2,7 +2,7 @@ import { SetDataProps, UserEntity } from '../entities/User.js'
 import { IUserRepository } from '../repositories/UserRepository.js'
 import { ObjectNotFoundException } from './errors/ObjectNotFoundException.js'
 
-interface createUserProps {
+export interface createUserProps {
   name: string
   email: string
   password: string

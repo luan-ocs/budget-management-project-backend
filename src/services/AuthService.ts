@@ -1,12 +1,10 @@
 import { JwtService } from './JwtService.js'
-import { UserService } from './UserService.js'
+import { createUserProps, UserService } from './UserService.js'
 
 export class AuthService {
-  private JwtService: JwtService
   private UserService: UserService
 
-  constructor(jwtService: JwtService, userService: UserService) {
-    this.JwtService = jwtService
+  constructor(userService: UserService) {
     this.UserService = userService
   }
 
@@ -18,6 +16,15 @@ export class AuthService {
     if (!isSame) {
       throw new Error('Usuário ou senha Incorreto')
     }
+
+    return {
+      ...user.getPublicData(),
+      token: JwtService.generateJwt(user),
+    }
+  }
+
+  async register(req: createUserProps) {
+    const user = await this.UserService.createUser(req)
 
     return {
       ...user.getPublicData(),
