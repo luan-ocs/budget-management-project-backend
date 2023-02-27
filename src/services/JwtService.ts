@@ -5,7 +5,7 @@ export class JwtService {
   static generateJwt(entity: UserEntity) {
     const userData = entity.getPublicData()
 
-    const iat = Date.now() / 1000
+    const iat = Math.floor(Date.now() / 1000)
 
     const exp = iat + 60 * 60 * 24 * 3
 

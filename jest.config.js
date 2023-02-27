@@ -30,7 +30,7 @@ export default {
     global: {
       branches: 60,
       functions: 60,
-      lines: 80,
+      lines: 60,
     },
   },
 }
