@@ -4,7 +4,7 @@ import crypto from 'node:crypto'
 export class ExpenseEntity {
   private data: Expense
 
-  constructor(data: Omit<Expense, 'id'>, id: string) {
+  constructor(data: Omit<Expense, 'id'>, id?: string) {
     const expenseData = { ...data, id: id || crypto.randomUUID() }
     this.data = expenseData
   }

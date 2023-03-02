@@ -24,16 +24,20 @@ export class MonthEntity {
   }
 
   public gainbyCategory() {
-    return this.gains.reduce(
+    const mappedGain = this.gains.reduce(
       (prev, next) => prev.set(next.getData().category, (prev.get(next.getData().category) || 0) + next.getValue()),
       new Map<GainCategory, number>(),
     )
+
+    return Object.fromEntries(mappedGain)
   }
 
   public expenseByCategory() {
-    return this.expenses.reduce(
+    const mappedExpense = this.expenses.reduce(
       (prev, next) => prev.set(next.getData().category, (prev.get(next.getData().category) || 0) + next.getValue()),
       new Map<ExpenseCategory, number>(),
     )
+
+    return Object.fromEntries(mappedExpense)
   }
 }
