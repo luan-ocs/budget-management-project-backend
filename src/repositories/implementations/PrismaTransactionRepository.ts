@@ -75,7 +75,7 @@ export class PrismaTransactionRepository implements TransactionRepository {
   async updateGain(gain: GainEntity): Promise<GainEntity> {
     const data = gain.getData()
 
-    await this.getExpenseById(data.id)
+    await this.getGainById(data.id)
 
     const updated = await this.gainRepo.update({
       data: data,
