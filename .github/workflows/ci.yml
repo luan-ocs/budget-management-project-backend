@@ -23,12 +23,12 @@ jobs:
 
       - name: Deps
         run: |
-          npm ci
+          yarn install --frozen-lockfile
 
       - name: Lint
         run: |
-          npm run lint
+          yarn lint
 
       - name: Test
         run: |
-          npm run test:ci
+          yarn test:ci

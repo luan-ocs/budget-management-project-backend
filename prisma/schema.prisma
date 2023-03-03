@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  createdAt DateTime  @default(now())
+  isAdmin   Boolean
+  password  String
+  birthday  DateTime?
+  gender    String?
+  work      String?
+  Gain      Gain[]
+  Expense   Expense[]
+
+  @@map("users")
+}
+
+model Gain {
+  name     String
+  id       String       @id @default(uuid())
+  value    Float
+  at       DateTime
+  category GainCategory
+  user     User         @relation(fields: [userId], references: [id])
+  userId   String
+
+  @@map("gains")
+}
+
+model Expense {
+  name     String
+  id       String          @id @default(uuid())
+  value    Float
+  at       DateTime
+  user     User            @relation(fields: [userId], references: [id])
+  category ExpenseCategory
+  userId   String
+
+  @@map("expenses")
+}
+
+enum GainCategory {
+  SALARIO
+  INVESTIMENTOS
+  FREELANCE
+  ALUGUEL
+  OUTROS
+}
+
+enum ExpenseCategory {
+  MORADIA
+  ALIMENTACAO
+  TRANSPORTE
+  PESSOAL
+  DIVIDAS
+}
