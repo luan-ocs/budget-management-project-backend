@@ -183,7 +183,7 @@ export class TransactionController {
 
     const gains = await this.service.getGainByMonth(params.date, params.userId)
 
-    res.send(gains)
+    res.send(gains.map(gain => gain.getData()))
   }
 
   async getExpenseMonth(req: FastifyRequest, res: FastifyReply) {
