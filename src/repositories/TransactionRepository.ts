@@ -17,4 +17,7 @@ export interface TransactionRepository {
 
   monthData(date: Date, userid: string): Promise<MonthEntity>
   last2Year(userid: string): Promise<MonthEntity[]>
+
+  getGainByMonth(date: Date, userid: string): Promise<GainEntity[]>
+  getExpenseByMonth(date: Date, userid: string): Promise<ExpenseEntity[]>
 }

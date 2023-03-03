@@ -149,4 +149,38 @@ export class PrismaTransactionRepository implements TransactionRepository {
 
     return months
   }
+
+  async getGainByMonth(date: Date, userid: string) {
+    const startofMonth = dayjs(date).startOf('month').toDate()
+    const endOfMonth = dayjs(date).endOf('month').toDate()
+
+    const gains = await this.gainRepo.findMany({
+      where: {
+        userId: userid,
+        at: {
+          lte: endOfMonth,
+          gte: startofMonth,
+        },
+      },
+    })
+
+    return gains.map(g => new GainEntity(g, g.id))
+  }
+
+  async getExpenseByMonth(date: Date, userid: string) {
+    const startofMonth = dayjs(date).startOf('month').toDate()
+    const endOfMonth = dayjs(date).endOf('month').toDate()
+
+    const expenses = await this.expenseRepo.findMany({
+      where: {
+        userId: userid,
+        at: {
+          lte: endOfMonth,
+          gte: startofMonth,
+        },
+      },
+    })
+
+    return expenses.map(expense => new ExpenseEntity(expense, expense.id))
+  }
 }
